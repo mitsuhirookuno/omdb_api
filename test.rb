@@ -10,17 +10,20 @@ class OmdbApi
   def initialize
     @params = {}
     @faraday = Faraday.new(url: 'http://www.omdbapi.com/') do |faraday|
-      # faraday.response :logger
       faraday.adapter  Faraday.default_adapter
     end
   end
 
-  def by_id_and_title(options = {})
-    scrape(@params.merge(options))
+  def by_id(id, options = {})
+    scrape(@params.merge(i: id).merge(options))
   end
 
-  def by_title(options = {})
-    scrape(@params.merge(options))
+  def by_title(title, options = {})
+    scrape(@params.merge(t: title).merge(options))
+  end
+
+  def by_search(search_word, options = {})
+    scrape(@params.merge(s: search_word).merge(options))
   end
 
   private
@@ -35,9 +38,9 @@ end
 
 begin
   omdb_api = OmdbApi.new
-  results = omdb_api.by_title( s: 'bakuman', type: 'movie')
+  results = omdb_api.by_search('bakuman', type: 'movie')
   results['Search'].each do |result|
-    p omdb_api.by_id_and_title( i: result['imdbID'])
+    p omdb_api.by_id(result['imdbID'])
   end
 rescue => ex
   puts ex.message
