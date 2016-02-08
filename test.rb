@@ -5,12 +5,15 @@ require 'active_support'
 require 'active_support/core_ext/hash'
 require 'pry'
 
+class MovieNotFound < StandardError;
+end
+
 class OmdbApi
 
   def initialize
     @params = {}
     @faraday = Faraday.new(url: 'http://www.omdbapi.com/') do |faraday|
-      faraday.adapter  Faraday.default_adapter
+      faraday.adapter Faraday.default_adapter
     end
   end
 
@@ -32,7 +35,9 @@ class OmdbApi
     response = @faraday.get do |r|
       r.url "?#{params.to_query}"
     end
-    JSON.parse(response.body)
+    response_json = JSON.parse(response.body)
+    throw MovieNotFound if response_json['Response'] == 'False'
+    response_json
   end
 end
 
