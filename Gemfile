@@ -6,3 +6,6 @@ gem 'json'
 gem 'activesupport'
 gem 'pry'
 # gem 'awesome_print'
+
+gem 'omdb_api'
+
